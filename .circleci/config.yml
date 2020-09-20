@@ -2,14 +2,14 @@ version: 2.1
 orbs:
   node: circleci/node@3.0.0
 
-parameters:
+executors:
   docker_param:
     docker:
         - image: circleci/node:13.8.0
 
 jobs:
   build:
-    docker_param
+    executor: docker_param
     steps:
       - checkout
       - run: npm i  
@@ -20,7 +20,7 @@ jobs:
       - run: npm run lint
       
   test:
-    docker_param
+    executor: docker_param
     steps:
       - checkout
       - restore_cache:
@@ -30,7 +30,7 @@ jobs:
       - run: npm run test 
 
   analyze:
-    docker_param
+    executor: docker_param
     steps:
       - checkout
       - restore_cache:
