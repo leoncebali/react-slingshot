@@ -1,7 +1,49 @@
 version: 2.1
 orbs:
   node: circleci/node@3.0.0
+
+parameters:
+  docker_param:
+    docker:
+        - image: circleci/node:13.8.0
+
+jobs:
+  build:
+    docker_param
+    steps:
+      - checkout
+      - run: npm i  
+      - save_cache:
+          key: "npm-packages"
+          paths:
+            - /scr/node_modules
+      - run: npm run lint
+      
+  test:
+    docker_param
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm i 
+      - run: npm run test 
+
+  analyze:
+    docker_param
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - "npm-packages"
+      - run: npm i 
+      - run: npm run audit
+
 workflows:
   node-tests:
     jobs:
-      - node/test
+      - build
+      - test:
+          require: build
+      - analyze:
+          require: test
