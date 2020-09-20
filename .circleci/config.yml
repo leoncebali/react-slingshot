@@ -40,10 +40,12 @@ jobs:
       - run: npm run audit
 
 workflows:
-  node-tests:
+  my_workflow:
     jobs:
       - build
       - test:
-          require: build
+          requires: 
+            - build
       - analyze:
-          require: test
+          requires: 
+            - test
